@@ -1,4 +1,4 @@
 import mjsify from "../../app/src/mjsify"
 //const testElem = document.querySelector("#test")
 
-mjsify()
+mjsify("lqwelqwellqwe/qbwejnas")

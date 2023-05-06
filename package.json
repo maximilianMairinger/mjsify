@@ -13,7 +13,9 @@
     "default": "./app/dist/esm/mjsify.mjs"
   },
   "scripts": {
-    "build": "del-cli app/dist && rollup --config rollup.prod.config.js && renamer --find /\\.js$/i --replace .mjs app/dist/esm/**",
+    "build": "del-cli app/dist && concurrently \"npm run buildESM\" \"npm run buildCJS\" -n \"esm,cjs\" -c \"bgGreen.bold,bgCyan.bold\"",
+    "buildESM": "tsc -p ./tsconfig.prod.esm.json && node esmify.mjs app/dist/esm",
+    "buildCJS": "tsc -p ./tsconfig.prod.cjs.json",
     "dev": "npm run devWeb",
     "devWeb": "rollup --config rollup.web.dev.config.js -w",
     "devNode": "rollup --config rollup.node.dev.config.js -w",
@@ -28,15 +30,15 @@
     "url": "git+https://github.com/maximilianMairinger/mjsify.git"
   },
   "keywords": [
-  "mjs",
-  "esm",
-  "convert",
-  "transpile",
-  "cjs",
-  "import",
-  "extension",
-  "export"
-],
+    "mjs",
+    "esm",
+    "convert",
+    "transpile",
+    "cjs",
+    "import",
+    "extension",
+    "export"
+  ],
   "author": "maximilianMairinger",
   "license": "ISC",
   "bugs": {
@@ -51,6 +53,7 @@
     "@types/jest": "^26.0.15",
     "@types/node": "^13.13.4",
     "commander": "^6.2.1",
+    "concurrently": "^8.0.1",
     "del-cli": "^5.0.0",
     "jest": "^26.6.3",
     "renamer": "^4.0.0",
@@ -60,6 +63,7 @@
     "webpack-merge": "^5.0.9"
   },
   "dependencies": {
-
+    "recursive-readdir": "^2.2.3",
+    "req-package-json": "^2.1.0"
   }
 }
