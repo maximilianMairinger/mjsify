@@ -52,7 +52,6 @@
     "@rollup/plugin-typescript": "^5.0.0",
     "@types/jest": "^26.0.15",
     "@types/node": "^13.13.4",
-    "commander": "^6.2.1",
     "concurrently": "^8.0.1",
     "del-cli": "^5.0.0",
     "jest": "^26.6.3",
@@ -64,6 +63,7 @@
   },
   "dependencies": {
     "recursive-readdir": "^2.2.3",
-    "req-package-json": "^2.1.0"
+    "req-package-json": "^2.1.0",
+    "commander": "^6.2.1"
   }
 }
