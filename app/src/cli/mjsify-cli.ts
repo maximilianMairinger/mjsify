@@ -9,13 +9,10 @@ program
   .name(config.name)
   .option('-s, --silent', 'silence stdout')
   .arguments('<dir>')
-  
+  .action((dir, p) => {
+    const options = p.opts()
+    mjsify(dir, { verbose: options.silent })
+  })
+
 .parse(process.argv)
 
-
-const options = program.opts()
-options.verbose = !options.silent
-delete options.silent
-
-if (program.args[0] !== undefined) mjsify(program.args[0], options)
-else program.help()
