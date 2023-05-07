@@ -11,7 +11,7 @@ program
   .arguments('<dir>')
   .action((dir, p) => {
     const options = p.opts()
-    mjsify(dir, { verbose: options.silent })
+    mjsify(dir, { verbose: !options.silent })
   })
 
 .parse(process.argv)
