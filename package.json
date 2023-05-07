@@ -4,7 +4,7 @@
   "description": "Make an ESM file explicit (.mjs), on all filenames and import statements.",
   "main": "./app/dist/esm/mjsify.mjs",
   "types": "./app/dist/esm/mjsify.d.ts",
-  "bin": "./app/dist/esm/cli/mjsify-cli.js",
+  "bin": "./app/dist/cjs/cli/mjsify-cli.js",
   "exports": {
     "node": {
       "import": "./app/dist/esm/mjsify.mjs",
