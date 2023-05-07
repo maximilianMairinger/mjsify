@@ -1,4 +1,4 @@
-// #!/usr/bin/env node
+#!/usr/bin/env node
 import mjsify from "../mjsify"
 import { program } from "commander"
 import reqPackageJson from "req-package-json"
