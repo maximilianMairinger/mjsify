@@ -1,6 +1,6 @@
 {
   "name": "mjsify",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Make an ESM file explicit (.mjs), on all filenames and import statements.",
   "main": "./app/dist/esm/mjsify.mjs",
   "types": "./app/dist/esm/mjsify.d.ts",
