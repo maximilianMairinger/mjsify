@@ -72,7 +72,7 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
     else {
       if (!mainIsInMjsDist) {
         console.warn(`mjsifyPackageJson: main: ${packageJsonParsed.main} is not in ${esmDistDir}. Replacing with new path`)
-        packageJsonParsed.main = path.join(esmDistDir, path.relative(distDir, packageJsonParsed.main))
+        packageJsonParsed.main = "./" + path.join(esmDistDir, path.relative(distDir, packageJsonParsed.main))
         doneSomething = true
       }
     }
@@ -90,7 +90,7 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
         else {
           if (!moduleIsInMjsDist) {
             console.warn(`mjsifyPackageJson: module: ${packageJsonParsed.module} is not in ${esmDistDir}. Replacing with new path`)
-            packageJsonParsed.module = path.join(esmDistDir, path.relative(distDir, packageJsonParsed.module))
+            packageJsonParsed.module = "./" + path.join(esmDistDir, path.relative(distDir, packageJsonParsed.module))
             doneSomething = true
           }
         }
@@ -105,7 +105,7 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
         }
       }
       else packageJsonParsed.bin = handleBin(packageJsonParsed.bin)
-      
+
       function handleBin(bin: string) {
         const binIsInDist = isInPath(distDir, bin)
         if (!binIsInDist) {
@@ -120,7 +120,7 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
             if (!binIsInMjsDist) {
               console.warn(`mjsifyPackageJson: bin: ${bin} is not in ${esmDistDir}. Replacing with new path`)
               doneSomething = true
-              return path.join(esmDistDir, path.relative(distDir, bin))
+              return "./" + path.join(esmDistDir, path.relative(distDir, bin))
             }
           }
         }
@@ -135,8 +135,8 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
         const exports = packageJsonParsed.exports = {} as any
         exports.default = packageJsonParsed.main
         exports.node = {
-          import: path.join(esmDistDir, mainFileName),
-          require: path.join(cjsDistDir, mainFileName)
+          import: "./" + path.join(esmDistDir, mainFileName),
+          require: "./" + path.join(cjsDistDir, mainFileName)
         }
       }
     }
