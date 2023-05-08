@@ -77,6 +77,26 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
       }
     }
 
+    if (packageJsonParsed.types !== undefined) {
+      const typesIsInDist = isInPath(distDir, packageJsonParsed.types)
+      if (!typesIsInDist) {
+        console.warn(`mjsifyPackageJson: types: ${packageJsonParsed.types} is not in ${distDir}. Skipping`)
+      }
+      else {
+        const typesIsInMjsDist = isInPath(esmDistDir, packageJsonParsed.types)
+        const typesIsInCjsDist = doenstHaveCjsDistDir && isInPath(cjsDistDir, packageJsonParsed.types)
+
+        if (typesIsInCjsDist) console.warn(`mjsifyPackageJson: types: ${packageJsonParsed.types} is in ${cjsDistDir}. Skipping`)
+        else {
+          if (!typesIsInMjsDist) {
+            console.warn(`mjsifyPackageJson: types: ${packageJsonParsed.types} is not in ${esmDistDir}. Replacing with new path`)
+            packageJsonParsed.types = "./" + path.join(esmDistDir, path.relative(distDir, packageJsonParsed.types))
+            doneSomething = true
+          }
+        }
+      }
+    }
+
     if (packageJsonParsed.module !== undefined) {
       const moduleIsInDist = isInPath(distDir, packageJsonParsed.module)
       if (!moduleIsInDist) {
@@ -187,7 +207,7 @@ export function mjsifyPackageJson(packageJsonParsed: any, distDir: string, {esmS
 
 
 
-const packageJsonProps = ["name", "version", "description", "main", "types", "bin", "exports", "scripts"]
+const packageJsonProps = ["name", "version", "description", "type", "main", "types", "bin", "exports", "scripts"]
 function ensureCorrectOrderOfPropsInPackageJson(packageJson: any) {
   const clone = {}
 
