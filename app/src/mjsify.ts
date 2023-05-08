@@ -58,6 +58,7 @@ function filterPackageJsonProps(packageJsonParsed: any) {
 
 
 function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: string, esmDistDir: string, cjsDistDir: string | undefined) {
+  let doneSomething = false
   const doenstHaveCjsDistDir = cjsDistDir === undefined
   if (packageJsonParsed.main !== undefined) {
     const mainIsInDist = isInPath(distDir, packageJsonParsed.main)
@@ -72,6 +73,7 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
       if (!mainIsInMjsDist) {
         console.warn(`mjsifyPackageJson: main: ${packageJsonParsed.main} is not in ${esmDistDir}. Replacing with new path`)
         packageJsonParsed.main = path.join(esmDistDir, path.relative(distDir, packageJsonParsed.main))
+        doneSomething = true
       }
     }
 
@@ -89,6 +91,7 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
           if (!moduleIsInMjsDist) {
             console.warn(`mjsifyPackageJson: module: ${packageJsonParsed.module} is not in ${esmDistDir}. Replacing with new path`)
             packageJsonParsed.module = path.join(esmDistDir, path.relative(distDir, packageJsonParsed.module))
+            doneSomething = true
           }
         }
       }
@@ -108,6 +111,7 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
           if (!binIsInMjsDist) {
             console.warn(`mjsifyPackageJson: bin: ${packageJsonParsed.bin} is not in ${esmDistDir}. Replacing with new path`)
             packageJsonParsed.bin = path.join(esmDistDir, path.relative(distDir, packageJsonParsed.bin))
+            doneSomething = true
           }
         }
       }
@@ -115,6 +119,7 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
 
     if (!doenstHaveCjsDistDir) {
       if (packageJsonParsed.exports === undefined) {
+        doneSomething = true
         const mainFileName = path.relative(esmDistDir, packageJsonParsed.main)
         const exports = packageJsonParsed.exports = {} as any
         exports.default = packageJsonParsed.main
@@ -129,6 +134,7 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
     }
     
   }
+  return doneSomething
 }
 
 
@@ -138,13 +144,13 @@ export function mjsifyPackageJson(packageJsonParsed: any, distDir: string, {esmS
   const esmDistDir = path.join(distDir, esmSubDir)
   const cjsDistDir = cjsSubDir !== undefined ? path.join(distDir, cjsSubDir) : undefined
   
-  ensureCorrectJsonExportStructure(packageJsonParsed, distDir, esmDistDir, cjsDistDir)
+  let doneSomething = ensureCorrectJsonExportStructure(packageJsonParsed, distDir, esmDistDir, cjsDistDir)
   
 
 
   const ob = filterPackageJsonProps(packageJsonParsed)
 
-  let doneSomething = false
+  
   function walk(ob: object, path: string[] = []) {
     for (const key in ob) {
       if (typeof ob[key] === "object") walk(ob[key], [...path, key])
