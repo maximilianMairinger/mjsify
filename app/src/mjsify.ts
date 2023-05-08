@@ -98,22 +98,33 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
     }
 
     if (packageJsonParsed.bin !== undefined) {
-      const binIsInDist = isInPath(distDir, packageJsonParsed.bin)
-      if (!binIsInDist) {
-        console.warn(`mjsifyPackageJson: bin: ${packageJsonParsed.bin} is not in ${distDir}. Skipping`)
+      if (typeof packageJsonParsed.bin === "object") {
+        for (const key in packageJsonParsed.bin) {
+          const bin = packageJsonParsed.bin[key]
+          packageJsonParsed.bin[key] = handleBin(bin)
+        }
       }
-      else {
-        const binIsInMjsDist = isInPath(esmDistDir, packageJsonParsed.bin)
-        const binIsInCjsDist = doenstHaveCjsDistDir && isInPath(cjsDistDir, packageJsonParsed.bin)
-
-        if (binIsInCjsDist) console.warn(`mjsifyPackageJson: bin: ${packageJsonParsed.bin} is in ${cjsDistDir}. Skipping`)
+      else packageJsonParsed.bin = handleBin(packageJsonParsed.bin)
+      
+      function handleBin(bin: string) {
+        const binIsInDist = isInPath(distDir, bin)
+        if (!binIsInDist) {
+          console.warn(`mjsifyPackageJson: bin: ${bin} is not in ${distDir}. Skipping`)
+        }
         else {
-          if (!binIsInMjsDist) {
-            console.warn(`mjsifyPackageJson: bin: ${packageJsonParsed.bin} is not in ${esmDistDir}. Replacing with new path`)
-            packageJsonParsed.bin = path.join(esmDistDir, path.relative(distDir, packageJsonParsed.bin))
-            doneSomething = true
+          const binIsInMjsDist = isInPath(esmDistDir, bin)
+          const binIsInCjsDist = doenstHaveCjsDistDir && isInPath(cjsDistDir, bin)
+
+          if (binIsInCjsDist) console.warn(`mjsifyPackageJson: bin: ${bin} is in ${cjsDistDir}. Skipping`)
+          else {
+            if (!binIsInMjsDist) {
+              console.warn(`mjsifyPackageJson: bin: ${bin} is not in ${esmDistDir}. Replacing with new path`)
+              doneSomething = true
+              return path.join(esmDistDir, path.relative(distDir, bin))
+            }
           }
         }
+        return bin
       }
     }
 
