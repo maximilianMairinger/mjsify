@@ -180,7 +180,30 @@ export function mjsifyPackageJson(packageJsonParsed: any, distDir: string, {esmS
   walk(ob)
 
 
-  return {doneSomething, packageJson: mergeKeysDeep(packageJsonParsed, ob)}
+
+
+  return {doneSomething, packageJson: ensureCorrectOrderOfPropsInPackageJson(mergeKeysDeep(packageJsonParsed, ob))}
+}
+
+
+
+const packageJsonProps = ["name", "version", "description", "main", "types", "bin", "exports", "scripts"]
+function ensureCorrectOrderOfPropsInPackageJson(packageJson: any) {
+  const clone = {}
+
+  for (const key of packageJsonProps) {
+    if (packageJson[key] !== undefined) {
+      clone[key] = packageJson[key]
+    }
+  }
+
+  for (const key in packageJson) {
+    if (!packageJsonProps.includes(key)) {
+      clone[key] = packageJson[key]
+    }
+  }
+
+  return clone
 }
 
 
