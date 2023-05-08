@@ -1,7 +1,9 @@
 #!/usr/bin/env node
-import mjsify from "../mjsify"
+import mjsify, { mjsifyPackageJson } from "../mjsify"
 import { program } from "commander"
-import reqPackageJson from "req-package-json"
+import reqPackageJson, { reqPackagePath } from "req-package-json"
+import {promises as fs} from "fs"
+import path from "path"
 const config = reqPackageJson()
 
 program
@@ -12,6 +14,12 @@ program
   .action((dir, p) => {
     const options = p.opts()
     mjsify(dir, { verbose: !options.silent })
+
+
+    const {doneSomething, packageJson} = mjsifyPackageJson(reqPackageJson(""), dir, { verbose: !options.silent })
+    if (doneSomething) {
+      fs.writeFile(path.join(reqPackagePath(""), "package.json"), JSON.stringify(packageJson, null, 2))
+    }
   })
 
 .parse(process.argv)
