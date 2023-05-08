@@ -84,7 +84,7 @@ export function mjsifyPackageJson(packageJsonParsed: any, dirOfMjsDist: string, 
 }
 
 
-import path from "path"
+import * as path from "path"
 
 function isInPath(superPath: string, subPath: string) {
   return !path.relative(superPath, subPath).startsWith("..")

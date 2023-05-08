@@ -3,7 +3,7 @@ import mjsify, { mjsifyPackageJson } from "../mjsify"
 import { program } from "commander"
 import reqPackageJson, { reqPackagePath } from "req-package-json"
 import {promises as fs} from "fs"
-import path from "path"
+import * as path from "path"
 const config = reqPackageJson()
 
 program
