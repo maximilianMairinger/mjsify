@@ -59,7 +59,7 @@ function filterPackageJsonProps(packageJsonParsed: any) {
 
 function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: string, esmDistDir: string, cjsDistDir: string | undefined) {
   let doneSomething = false
-  const doenstHaveCjsDistDir = cjsDistDir === undefined
+  const hasCjsDistDir = cjsDistDir !== undefined
   if (packageJsonParsed.main !== undefined) {
     const mainIsInDist = isInPath(distDir, packageJsonParsed.main)
     if (!mainIsInDist) {
@@ -67,8 +67,8 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
     }
 
     const mainIsInMjsDist = isInPath(esmDistDir, packageJsonParsed.main)
-    const mainIsInCjsDist = doenstHaveCjsDistDir && isInPath(cjsDistDir, packageJsonParsed.main)
-    if (mainIsInCjsDist) console.warn(`mjsifyPackageJson: main: ${packageJsonParsed.main} is in ${cjsDistDir}. Skipping`)
+    const mainIsInCjsDist = hasCjsDistDir && isInPath(cjsDistDir, packageJsonParsed.main)
+    if (mainIsInCjsDist) console.info(`mjsifyPackageJson: main: ${packageJsonParsed.main} is in ${cjsDistDir}. Skipping`)
     else {
       if (!mainIsInMjsDist) {
         console.warn(`mjsifyPackageJson: main: ${packageJsonParsed.main} is not in ${esmDistDir}. Replacing with new path`)
@@ -84,9 +84,9 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
       }
       else {
         const typesIsInMjsDist = isInPath(esmDistDir, packageJsonParsed.types)
-        const typesIsInCjsDist = doenstHaveCjsDistDir && isInPath(cjsDistDir, packageJsonParsed.types)
+        const typesIsInCjsDist = hasCjsDistDir && isInPath(cjsDistDir, packageJsonParsed.types)
 
-        if (typesIsInCjsDist) console.warn(`mjsifyPackageJson: types: ${packageJsonParsed.types} is in ${cjsDistDir}. Skipping`)
+        if (typesIsInCjsDist) console.info(`mjsifyPackageJson: types: ${packageJsonParsed.types} is in ${cjsDistDir}. Skipping`)
         else {
           if (!typesIsInMjsDist) {
             console.warn(`mjsifyPackageJson: types: ${packageJsonParsed.types} is not in ${esmDistDir}. Replacing with new path`)
@@ -104,9 +104,9 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
       }
       else {
         const moduleIsInMjsDist = isInPath(esmDistDir, packageJsonParsed.module)
-        const moduleIsInCjsDist = doenstHaveCjsDistDir && isInPath(cjsDistDir, packageJsonParsed.module)
+        const moduleIsInCjsDist = hasCjsDistDir && isInPath(cjsDistDir, packageJsonParsed.module)
 
-        if (moduleIsInCjsDist) console.warn(`mjsifyPackageJson: module: ${packageJsonParsed.module} is in ${cjsDistDir}. Skipping`)
+        if (moduleIsInCjsDist) console.info(`mjsifyPackageJson: module: ${packageJsonParsed.module} is in ${cjsDistDir}. Skipping`)
         else {
           if (!moduleIsInMjsDist) {
             console.warn(`mjsifyPackageJson: module: ${packageJsonParsed.module} is not in ${esmDistDir}. Replacing with new path`)
@@ -132,23 +132,39 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
           console.warn(`mjsifyPackageJson: bin: ${bin} is not in ${distDir}. Skipping`)
         }
         else {
-          const binIsInMjsDist = isInPath(esmDistDir, bin)
-          const binIsInCjsDist = doenstHaveCjsDistDir && isInPath(cjsDistDir, bin)
-
-          if (binIsInCjsDist) console.warn(`mjsifyPackageJson: bin: ${bin} is in ${cjsDistDir}. Skipping`)
-          else {
-            if (!binIsInMjsDist) {
-              console.warn(`mjsifyPackageJson: bin: ${bin} is not in ${esmDistDir}. Replacing with new path`)
-              doneSomething = true
-              return "./" + path.join(esmDistDir, path.relative(distDir, bin))
+          if (!hasCjsDistDir) {
+            const binIsInMjsDist = isInPath(esmDistDir, bin)
+            const binIsInCjsDist = isInPath(cjsDistDir, bin)
+  
+            if (binIsInMjsDist) console.info(`mjsifyPackageJson: bin: ${bin} is in ${esmDistDir}. Skipping`)
+            else {
+              if (!binIsInCjsDist) {
+                console.warn(`mjsifyPackageJson: bin: ${bin} is not in ${cjsDistDir}. Replacing with new path`)
+                doneSomething = true
+                return "./" + path.join(cjsDistDir, path.relative(distDir, bin))
+              }
             }
           }
+          else {
+            const binIsInMjsDist = isInPath(esmDistDir, bin)
+            const binIsInCjsDist = false
+  
+            if (binIsInCjsDist) console.info(`mjsifyPackageJson: bin: ${bin} is in ${cjsDistDir}. Skipping`)
+            else {
+              if (!binIsInMjsDist) {
+                console.warn(`mjsifyPackageJson: bin: ${bin} is not in ${esmDistDir}. Replacing with new path`)
+                doneSomething = true
+                return "./" + path.join(esmDistDir, path.relative(distDir, bin))
+              }
+            }
+          }
+          
         }
         return bin
       }
     }
 
-    if (!doenstHaveCjsDistDir) {
+    if (hasCjsDistDir) {
       if (packageJsonParsed.exports === undefined) {
         doneSomething = true
         const mainFileName = path.relative(esmDistDir, packageJsonParsed.main)
