@@ -62,8 +62,9 @@
     "webpack-merge": "^5.0.9"
   },
   "dependencies": {
+    "circ-clone": "^2.1.0",
+    "commander": "^6.2.1",
     "recursive-readdir": "^2.2.3",
-    "req-package-json": "^2.1.0",
-    "commander": "^6.2.1"
+    "req-package-json": "^2.1.2"
   }
 }

@@ -1,4 +1,4 @@
-import mjsify from "../../app/src/mjsify"
-//const testElem = document.querySelector("#test")
+import mjsify, {mjsifyPackageJson} from "../../app/src/mjsify"
+import reqPackageJson from "req-package-json"
 
-mjsify("lqwelqwellqwe/qbwejnas")
+console.log(mjsifyPackageJson(reqPackageJson(), "app/dist/esm", {verbose: true}))
