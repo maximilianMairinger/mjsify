@@ -28,7 +28,7 @@ program
       if (doneSomething) {
         const packagePath = path.join(reqPackagePath(""), "package.json")
         fs.writeFile(packagePath, JSON.stringify(packageJson, null, 2) + "\n").then(() => {
-          if (!options.silent) console.log(`mjsifyPackageJson: ${packagePath} updated`)
+          console.info(`mjsifyPackageJson: ${packagePath} updated`)
         })
       }
     }
