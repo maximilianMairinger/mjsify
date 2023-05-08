@@ -132,7 +132,7 @@ function ensureCorrectJsonExportStructure(packageJsonParsed: any, distDir: strin
           console.warn(`mjsifyPackageJson: bin: ${bin} is not in ${distDir}. Skipping`)
         }
         else {
-          if (!hasCjsDistDir) {
+          if (hasCjsDistDir) {
             const binIsInMjsDist = isInPath(esmDistDir, bin)
             const binIsInCjsDist = isInPath(cjsDistDir, bin)
   
