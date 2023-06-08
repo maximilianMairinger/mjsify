@@ -64,6 +64,7 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "circ-clone": "^2.1.0",
+    "colorful-cli-logger": "^1.0.0",
     "commander": "^10.0.1",
     "recursive-readdir": "^2.2.3",
     "req-package-json": "^2.1.2"

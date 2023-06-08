@@ -1,7 +1,7 @@
 import { promises as fs } from "fs"
 import * as readDir from "recursive-readdir"
 import { mergeKeysDeep, cloneKeys } from "circ-clone"
-import * as console from "./lib/logger"
+import * as console from "colorful-cli-logger"
 
 
 export async function mjsify(dir: string) {
