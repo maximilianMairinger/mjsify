@@ -47,7 +47,7 @@ function filterPackageJsonProps(packageJsonParsed: any) {
     let localCopy = ob
     for (let i = 0; i < keysAr.length-1; i++) {
       const key = keysAr[i];
-      localCopy[key] = {}
+      if (localCopy[key] === undefined) localCopy[key] = {}
       localCopy = localCopy[key]
     }
 
